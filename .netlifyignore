@@ -1,0 +1,11 @@
+requirements.txt
+backend/
+main.py
+start.py
+run_server.py
+Procfile
+nixpacks.toml
+.railwayignore
+*.py
+__pycache__/
+.env 

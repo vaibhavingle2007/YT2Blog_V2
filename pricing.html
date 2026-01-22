@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upgrade - YT2Blog Pro</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+    <header class="sticky top-0 z-40 border-b bg-white/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <div class="bg-red-600 p-2 rounded-lg">
+            <i data-lucide="youtube" class="h-5 w-5 text-white"></i>
+          </div>
+          <div class="font-bold text-slate-900">YT2Blog <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800 ml-2">PRO</span></div>
+        </a>
+        <div class="flex items-center gap-3">
+          <span id="userBadge" class="text-sm text-slate-700 hidden"></span>
+          <button id="authBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800">Sign in</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col gap-3 mb-10">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Upgrade your plan</h1>
+        <p class="text-slate-600 max-w-2xl">Plans increase your daily credits and unlock higher throughput. Credits are consumed per blog generation.</p>
+        <div id="creditsRow" class="text-sm text-slate-700 hidden">
+          Current credits: <span class="font-semibold" id="creditsRemaining">-</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Free -->
+        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">Free</h2>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-slate-100 text-slate-700">Default</span>
+          </div>
+          <div class="mt-4 text-3xl font-extrabold text-slate-900">₹0</div>
+          <div class="text-sm text-slate-600 mt-1">5 credits/day</div>
+          <ul class="mt-6 space-y-2 text-sm text-slate-700">
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Multi-language</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>All templates</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Export to Markdown/HTML</li>
+          </ul>
+          <button disabled class="mt-6 w-full py-2.5 rounded-lg bg-slate-100 text-slate-500 text-sm font-semibold">Current plan</button>
+        </div>
+
+        <!-- Starter -->
+        <div class="rounded-2xl border bg-white p-6 shadow-sm ring-2 ring-blue-600">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">Starter</h2>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800">Best for creators</span>
+          </div>
+          <div class="mt-4 text-3xl font-extrabold text-slate-900">₹199<span class="text-base font-bold text-slate-600">/mo</span></div>
+          <div class="text-sm text-slate-600 mt-1">50 credits/day</div>
+          <ul class="mt-6 space-y-2 text-sm text-slate-700">
+            <li class="flex gap-2"><i data-lucide="zap" class="h-4 w-4 text-blue-600"></i>Faster generation</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Priority support</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Higher limits</li>
+          </ul>
+          <button data-plan="starter" class="mt-6 w-full py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">Upgrade to Starter</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">Pro</h2>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-purple-100 text-purple-800">Teams</span>
+          </div>
+          <div class="mt-4 text-3xl font-extrabold text-slate-900">₹499<span class="text-base font-bold text-slate-600">/mo</span></div>
+          <div class="text-sm text-slate-600 mt-1">200 credits/day</div>
+          <ul class="mt-6 space-y-2 text-sm text-slate-700">
+            <li class="flex gap-2"><i data-lucide="crown" class="h-4 w-4 text-purple-700"></i>Highest limits</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Premium support</li>
+            <li class="flex gap-2"><i data-lucide="check" class="h-4 w-4 text-green-600"></i>Roadmap access</li>
+          </ul>
+          <button data-plan="pro" class="mt-6 w-full py-2.5 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">Upgrade to Pro</button>
+        </div>
+      </div>
+
+      <div class="mt-10 rounded-2xl border bg-white p-6 text-sm text-slate-600">
+        <div class="flex items-start gap-3">
+          <i data-lucide="info" class="h-5 w-5 text-slate-500 mt-0.5"></i>
+          <div>
+            Payments aren’t fully wired yet in this repo. The upgrade buttons are hooked for Stripe-ready checkout; once you share your Stripe Price IDs, I’ll make purchases live.
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+      lucide.createIcons();
+
+      const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:8000"
+        : "https://ytblogs-production.up.railway.app";
+
+      const authBtn = document.getElementById("authBtn");
+      const userBadge = document.getElementById("userBadge");
+      const creditsRow = document.getElementById("creditsRow");
+      const creditsRemaining = document.getElementById("creditsRemaining");
+
+      const tokenKey = "yt2blog_id_token";
+      const getToken = () => localStorage.getItem(tokenKey);
+      const setToken = (t) => localStorage.setItem(tokenKey, t);
+      const clearToken = () => localStorage.removeItem(tokenKey);
+
+      async function getPublicConfig() {
+        const res = await fetch(`${API_BASE_URL}/api/public-config`);
+        if (!res.ok) throw new Error("Failed to load public config");
+        return await res.json();
+      }
+
+      async function authedFetch(url, options = {}) {
+        const token = getToken();
+        const headers = Object.assign({}, options.headers || {});
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+        return fetch(url, Object.assign({}, options, { headers }));
+      }
+
+      const cfg = await getPublicConfig();
+      const firebaseConfig = cfg.firebase || {};
+      if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+        alert("Firebase is not configured on the server. Add FIREBASE_* values to .env and restart backend.");
+      }
+      const stripeConfigured = cfg.billing?.stripe_configured;
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const auth = getAuth(firebaseApp);
+      const provider = new GoogleAuthProvider();
+
+      authBtn.addEventListener("click", async () => {
+        if (auth.currentUser) {
+          await signOut(auth);
+          return;
+        }
+        await signInWithPopup(auth, provider);
+      });
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          clearToken();
+          authBtn.textContent = "Sign in";
+          userBadge.classList.add("hidden");
+          creditsRow.classList.add("hidden");
+          return;
+        }
+
+        const token = await user.getIdToken();
+        setToken(token);
+
+        authBtn.textContent = "Sign out";
+        userBadge.textContent = user.email || user.displayName || "Signed in";
+        userBadge.classList.remove("hidden");
+
+        try {
+          const res = await authedFetch(`${API_BASE_URL}/api/me/credits`);
+          if (res.ok) {
+            const data = await res.json();
+            creditsRemaining.textContent = data.credits_remaining;
+            creditsRow.classList.remove("hidden");
+          }
+        } catch (_) {}
+      });
+
+      document.querySelectorAll("button[data-plan]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!getToken()) {
+            alert("Please sign in first.");
+            return;
+          }
+          const planId = btn.dataset.plan;
+          try {
+            const res = await authedFetch(`${API_BASE_URL}/api/billing/checkout`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ plan_id: planId }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              alert(data?.detail || "Failed to start checkout");
+              return;
+            }
+            if (data.applied) {
+              alert(`Plan '${planId}' activated for free (demo mode).`);
+              // refresh credits display
+              try {
+                const creditsRes = await authedFetch(`${API_BASE_URL}/api/me/credits`);
+                if (creditsRes.ok) {
+                  const c = await creditsRes.json();
+                  creditsRemaining.textContent = c.credits_remaining;
+                  creditsRow.classList.remove("hidden");
+                }
+              } catch (_) {}
+              return;
+            }
+            window.location.href = data.checkout_url;
+          } catch (e) {
+            alert("Failed to start checkout.");
+          }
+        });
+      });
+
+      // If Stripe is not configured, update CTA labels to show free activation
+      if (!stripeConfigured) {
+        document.querySelectorAll("button[data-plan]").forEach((btn) => {
+          btn.textContent = `Activate ${btn.dataset.plan} (free for demo)`;
+        });
+      }
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>YT2Blog Pro - AI-Powered YouTube to Blog Converter</title>
+    <meta name="description" content="Transform YouTube videos into professional blog posts with multi-language support, code detection, and advanced AI features. Built for content creators and developers.">
+    <meta name="keywords" content="YouTube to blog, AI content creation, multi-language blog, code tutorial converter, content marketing">
+    <meta name="author" content="YT2Blog Team">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF0000',
+                        secondary: '#CC0000',
+                        accent: '#282828',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary-color: #FF0000;
+            --background-color: #f9fafb;
+            --panel-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .panel-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .feature-toggle {
+            transition: all 0.2s ease;
+        }
+        
+        .feature-toggle:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .toggle-checkbox {
+            appearance: none;
+            width: 44px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .toggle-checkbox:checked {
+            background: #10b981;
+        }
+        
+        .toggle-checkbox::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .toggle-checkbox:checked::before {
+            transform: translateX(20px);
+        }
+        
+        .code-block {
+            position: relative;
+            background: #1f2937;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .code-header {
+            background: #374151;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #d1d5db;
+        }
+        
+        .copy-code-btn {
+            background: #4b5563;
+            border: none;
+            color: #d1d5db;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+        
+        .copy-code-btn:hover {
+            background: #6b7280;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .editor-content {
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .editor-content:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #3b82f6;
+        }
+        
+        .project-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .project-item:hover {
+            background: #f3f4f6;
+            transform: translateY(-1px);
+        }
+        
+        .credit-indicator {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            min-width: 160px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-menu button {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .dropdown-menu button:hover {
+            background: #f3f4f6;
+        }
+    </style>
+  </head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="glass-effect border-b sticky top-0 z-50 panel-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-red-600 rounded-lg blur opacity-50"></div>
+                        <div class="relative bg-red-600 p-2 rounded-lg">
+                            <i data-lucide="youtube" class="h-6 w-6 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-2xl font-bold text-gray-900">YT2Blog</h1>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">PRO</span>
+                    </div>
+                </div>
+                
+                <!-- Credits Display -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="credit-indicator">
+                        <i data-lucide="zap" class="h-4 w-4"></i>
+                        <span id="creditsRemaining">5</span>
+                        <span>credits</span>
+                    </div>
+                    <button id="loginBtn" class="bg-white text-gray-900 px-4 py-2 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-all">
+                        Sign in
+                    </button>
+                    <button id="upgradeBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all">
+                        Upgrade
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Panel - Input Controls -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- URL Input Section -->
+                <div class="glass-effect rounded-2xl p-6 panel-shadow slide-in-left">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="link" class="h-5 w-5 mr-2 text-red-600"></i>
+                        YouTube URL
+                    </h2>
+                    
+                    <form id="urlForm" class="space-y-4">
+                        <div class="relative">
+                            <input
+                                type="url"
+                                id="urlInput"
+                                placeholder="Paste your YouTube video URL here..."
+                                class="block w-full px-4 py-3 text-sm border-2 border-gray-300 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+                            />
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="validationIcon" class="h-5 w-5 hidden"></i>
+                            </div>
+                        </div>
+                        
+                        <div id="urlError" class="text-red-600 text-sm hidden flex items-center space-x-1">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            <span>Please enter a valid YouTube URL</span>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="glass-effect rounded-2xl p-6 panel-shadow slide-in-left" style="animation-delay: 0.1s">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="globe" class="h-5 w-5 mr-2 text-blue-600"></i>
+                        Output Language
+                    </h2>
+                    
+                    <select id="languageSelector" class="w-full px-4 py-3 text-sm border-2 border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="hi">🇮🇳 Hindi</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                        <option value="fr">🇫🇷 French</option>
+                        <option value="de">🇩🇪 German</option>
+                        <option value="pt">🇵🇹 Portuguese</option>
+                        <option value="ja">🇯🇵 Japanese</option>
+                        <option value="ko">🇰🇷 Korean</option>
+                    </select>
+                </div>
+
+                <!-- Feature Toggles -->
+                <div class="glass-effect rounded-2xl p-6 panel-shadow slide-in-left" style="animation-delay: 0.2s">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="settings" class="h-5 w-5 mr-2 text-green-600"></i>
+                        AI Features
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="feature-toggle p-3 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="font-medium text-gray-900">Fact Cleanup Mode</label>
+                                    <p class="text-sm text-gray-600">Remove filler content and promotional segments</p>
+                                </div>
+                                <input type="checkbox" id="factCleanupMode" class="toggle-checkbox" checked>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-toggle p-3 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="font-medium text-gray-900">Humanize Output</label>
+                                    <p class="text-sm text-gray-600">Make content sound more natural and human-written</p>
+                                </div>
+                                <input type="checkbox" id="humanizeMode" class="toggle-checkbox" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Selection -->
+                <div class="glass-effect rounded-2xl p-6 panel-shadow slide-in-left" style="animation-delay: 0.3s">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="layout-template" class="h-5 w-5 mr-2 text-purple-600"></i>
+                        Blog Template
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="template-btn p-3 rounded-lg border-2 border-red-500 bg-red-50 text-red-900 hover:bg-red-100 transition-all" data-template="article">
+                            <div class="flex flex-col items-center space-y-2">
+                                <i data-lucide="file-text" class="h-6 w-6"></i>
+                                <span class="font-medium text-sm">Article</span>
+                            </div>
+                        </button>
+                        <button class="template-btn p-3 rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all" data-template="tutorial">
+                            <div class="flex flex-col items-center space-y-2">
+                                <i data-lucide="book-open" class="h-6 w-6"></i>
+                                <span class="font-medium text-sm">Tutorial</span>
+                            </div>
+                        </button>
+                        <button class="template-btn p-3 rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all" data-template="review">
+                            <div class="flex flex-col items-center space-y-2">
+                                <i data-lucide="star" class="h-6 w-6"></i>
+                                <span class="font-medium text-sm">Review</span>
+                            </div>
+                        </button>
+                        <button class="template-btn p-3 rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all" data-template="summary">
+                            <div class="flex flex-col items-center space-y-2">
+                                <i data-lucide="list" class="h-6 w-6"></i>
+                                <span class="font-medium text-sm">Summary</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button
+                    id="generateBtn"
+                    class="w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 transform bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] slide-in-left"
+                    style="animation-delay: 0.4s"
+                >
+                    <i data-lucide="sparkles" class="h-5 w-5 inline mr-2"></i>
+                    Generate Blog
+                </button>
+
+                <!-- Projects Sidebar -->
+                <div id="projectsSidebar" class="glass-effect rounded-2xl p-6 panel-shadow slide-in-left hidden" style="animation-delay: 0.5s">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="folder" class="h-5 w-5 mr-2 text-orange-600"></i>
+                        Recent Projects
+                    </h2>
+                    
+                    <div id="projectsList" class="space-y-3">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <!-- Right Panel - Output & Preview -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Loading Section -->
+                <div id="loadingSection" class="hidden glass-effect rounded-2xl p-8 panel-shadow fade-in">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Converting Your Video</h3>
+                        <p class="text-gray-700">Please wait while we process your YouTube video into a blog post</p>
+                    </div>
+
+                    <!-- Enhanced Progress Steps -->
+                    <div class="space-y-6 mb-8">
+                        <div id="step1" class="progress-step flex items-center space-x-4 p-4 rounded-lg bg-red-50 border border-red-200">
+                            <div class="step-icon w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-red-900">Analyzing Video</h4>
+                                <p class="text-sm text-red-700">Extracting video metadata and detecting content type<span class="loading-dots"></span></p>
+                            </div>
+                        </div>
+
+                        <div id="step2" class="progress-step flex items-center space-x-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
+                            <div class="step-icon w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+                                <i data-lucide="file-text" class="h-5 w-5 text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-700">Processing Transcript</h4>
+                                <p class="text-sm text-gray-600">Extracting and cleaning video transcript</p>
+                            </div>
+                        </div>
+
+                        <div id="step3" class="progress-step flex items-center space-x-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
+                            <div class="step-icon w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+                                <i data-lucide="brain" class="h-5 w-5 text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-700">Generating Content</h4>
+                                <p class="text-sm text-gray-600">AI is creating your personalized blog post</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm text-gray-700 mb-3">
+                            <span class="font-medium">Progress</span>
+                            <span id="progressPercentage" class="font-semibold text-red-600">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4 shadow-inner">
+                            <div id="progressBar" class="bg-gradient-to-r from-red-500 via-red-600 to-red-700 h-4 rounded-full transition-all duration-700 ease-out shadow-sm" style="width: 0%">
+                                <div class="h-full bg-gradient-to-r from-white/20 to-transparent rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Editor -->
+                <div id="blogEditor" class="hidden glass-effect rounded-2xl panel-shadow overflow-hidden slide-in-right">
+                    <!-- Editor Header -->
+                    <div class="bg-gray-50 p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <h3 class="text-lg font-semibold text-gray-900">Blog Editor</h3>
+                                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                    <span id="wordCount">0 words</span>
+                                    <span>•</span>
+                                    <span id="readingTime">0 min read</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Export Options -->
+                            <div class="flex items-center space-x-2">
+                                <button id="copyBtn" class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-all">
+                                    <i data-lucide="copy" class="h-4 w-4 mr-2"></i>
+                                    Copy
+                                </button>
+                                
+                                <div class="export-dropdown">
+                                    <button id="exportBtn" class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all">
+                                        <i data-lucide="download" class="h-4 w-4 mr-2"></i>
+                                        Export
+                                        <i data-lucide="chevron-down" class="h-4 w-4 ml-1"></i>
+                                    </button>
+                                    <div id="exportDropdown" class="dropdown-menu">
+                                        <button onclick="exportContent('markdown')">
+                                            <i data-lucide="file-text" class="h-4 w-4 mr-2 inline"></i>
+                                            Markdown (.md)
+                                        </button>
+                                        <button onclick="exportContent('html')">
+                                            <i data-lucide="code" class="h-4 w-4 mr-2 inline"></i>
+                                            HTML (.html)
+                                        </button>
+                                        <button onclick="exportContent('pdf')">
+                                            <i data-lucide="file" class="h-4 w-4 mr-2 inline"></i>
+                                            PDF (.pdf)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Editable Title -->
+                        <input
+                            type="text"
+                            id="blogTitle"
+                            placeholder="Blog title will appear here..."
+                            class="w-full text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 placeholder-gray-500"
+                        />
+                    </div>
+                    
+                    <!-- Rich Text Editor -->
+                    <div class="relative">
+                        <!-- Editor Toolbar -->
+                        <div class="bg-white border-b border-gray-200 p-2 flex items-center space-x-2">
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" data-format="bold" title="Bold">
+                                <i data-lucide="bold" class="h-4 w-4"></i>
+                            </button>
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" data-format="italic" title="Italic">
+                                <i data-lucide="italic" class="h-4 w-4"></i>
+                            </button>
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" data-format="heading" title="Heading">
+                                <i data-lucide="heading" class="h-4 w-4"></i>
+                            </button>
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" data-format="list" title="List">
+                                <i data-lucide="list" class="h-4 w-4"></i>
+                            </button>
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" data-format="link" title="Link">
+                                <i data-lucide="link" class="h-4 w-4"></i>
+                            </button>
+                            <div class="border-l border-gray-300 h-6 mx-2"></div>
+                            <button class="format-btn p-2 rounded hover:bg-gray-100" onclick="togglePreview()" title="Preview">
+                                <i data-lucide="eye" class="h-4 w-4"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Editor Content -->
+                        <div id="blogContent" contenteditable="true" class="editor-content prose prose-sm max-w-none">
+                            <!-- Generated content will appear here -->
+                        </div>
+                        
+                        <!-- Preview Mode -->
+                        <div id="blogPreview" class="editor-content prose prose-sm max-w-none hidden">
+                            <!-- Preview content will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Preview (shown after processing) -->
+                <div id="videoPreview" class="hidden glass-effect rounded-2xl p-6 panel-shadow slide-in-right" style="animation-delay: 0.1s">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Video Information</h3>
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="md:w-1/3">
+                            <div class="relative rounded-lg overflow-hidden">
+                                <img id="videoThumbnail" src="" alt="" class="w-full h-32 object-cover">
+                                <div id="videoDuration" class="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded"></div>
+                                <div id="codeIndicator" class="hidden absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                                    <i data-lucide="code" class="h-3 w-3 inline mr-1"></i>
+                                    Code Tutorial
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3 space-y-3">
+                            <h4 id="videoTitle" class="text-lg font-bold text-gray-900"></h4>
+                            <div class="flex flex-wrap gap-4 text-sm text-gray-700">
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="user" class="h-4 w-4 text-gray-600"></i>
+                                    <span id="channelName"></span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="eye" class="h-4 w-4 text-gray-600"></i>
+                                    <span id="videoViews"></span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="calendar" class="h-4 w-4 text-gray-600"></i>
+                                    <span id="publishedDate"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Credits Warning Modal -->
+    <div id="creditsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 panel-shadow">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="zap-off" class="h-8 w-8 text-yellow-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Credits Exhausted</h3>
+                <p class="text-gray-600 mb-6">You've used all your free credits for today. Upgrade to continue generating blogs or wait 24 hours for credits to reset.</p>
+                <div class="flex space-x-3">
+                    <button onclick="closeCreditsModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Wait 24 Hours
+                    </button>
+                    <button onclick="upgradePlan()" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700">
+                        Upgrade Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-xl transform translate-x-full transition-all duration-300 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+                <i data-lucide="check-circle" class="h-6 w-6"></i>
+            </div>
+            <div class="flex-1">
+                <p class="font-semibold text-sm" id="toastMessage">Success!</p>
+            </div>
+            <button onclick="document.getElementById('successToast').style.transform = 'translateX(100%)'" class="flex-shrink-0 ml-2 text-white hover:text-gray-200 transition-colors">
+                <i data-lucide="x" class="h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+    <!-- JavaScript -->
+    <script>
+        // API Configuration: use same origin to avoid CORS issues on 127.0.0.1/localhost
+        const API_BASE_URL = `${window.location.origin}`;
+
+        // State management
+        let currentVideoData = null;
+        let currentTemplate = 'article';
+        let currentBlogContent = '';
+        let currentLanguage = 'en';
+        let templateCache = {};
+        let isGenerating = false;
+        let loadingTimer = null;
+        let userCredits = 5;
+        let currentUser = null;
+        const TOKEN_STORAGE_KEY = 'yt2blog_id_token';
+
+        // DOM elements
+        const urlForm = document.getElementById('urlForm');
+        const urlInput = document.getElementById('urlInput');
+        const validationIcon = document.getElementById('validationIcon');
+        const urlError = document.getElementById('urlError');
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingSection = document.getElementById('loadingSection');
+        const blogEditor = document.getElementById('blogEditor');
+        const videoPreview = document.getElementById('videoPreview');
+        const blogContent = document.getElementById('blogContent');
+        const blogTitle = document.getElementById('blogTitle');
+        const languageSelector = document.getElementById('languageSelector');
+        const factCleanupMode = document.getElementById('factCleanupMode');
+        const humanizeMode = document.getElementById('humanizeMode');
+        const creditsRemaining = document.getElementById('creditsRemaining');
+        const wordCount = document.getElementById('wordCount');
+        const readingTime = document.getElementById('readingTime');
+        const loginBtn = document.getElementById('loginBtn');
+        const upgradeBtn = document.getElementById('upgradeBtn');
+
+        // Progress elements
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = document.getElementById('progressPercentage');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Set up event listeners
+            setupEventListeners();
+
+            // Init Firebase auth (loads config from backend)
+            await initFirebaseAuth();
+            
+            // Load user projects
+            loadUserProjects();
+            
+            // Update credits display
+            updateCreditsDisplay();
+        }
+
+        function setupEventListeners() {
+            // URL form submission
+            urlForm.addEventListener('submit', handleFormSubmit);
+            
+            // Generate button click (direct handling)
+            generateBtn.addEventListener('click', handleGenerateClick);
+            
+            // URL input validation
+            urlInput.addEventListener('input', handleUrlInput);
+            
+            // Language selector
+            languageSelector.addEventListener('change', handleLanguageChange);
+            
+            // Template selection
+            document.addEventListener('click', handleTemplateClick);
+            
+            // Copy button
+            document.getElementById('copyBtn').addEventListener('click', handleCopy);
+            
+            // Export dropdown
+            document.getElementById('exportBtn').addEventListener('click', toggleExportDropdown);
+            
+            // Blog content editing
+            blogContent.addEventListener('input', handleContentEdit);
+            blogTitle.addEventListener('input', handleTitleEdit);
+            
+            // Format buttons
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.addEventListener('click', handleFormat);
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', handleOutsideClick);
+
+            // Upgrade button
+            upgradeBtn.addEventListener('click', () => {
+                window.location.href = '/pricing';
+            });
+
+            // Login button (handled after firebase init)
+        }
+
+        async function initFirebaseAuth() {
+            // Dynamically import Firebase modules (no build step needed)
+            const [{ initializeApp }, { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }] = await Promise.all([
+                import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+                import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js')
+            ]);
+
+            const cfgRes = await fetch(`${API_BASE_URL}/api/public-config`);
+            if (!cfgRes.ok) {
+                console.warn('Failed to load public config');
+                return;
+            }
+            const cfg = await cfgRes.json();
+            const firebaseConfig = cfg.firebase || {};
+            if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+                console.warn('Firebase not configured (missing apiKey/projectId)');
+                showToast('Sign-in is disabled: Firebase config missing on server', 'error');
+                return;
+            }
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GoogleAuthProvider();
+
+            loginBtn.addEventListener('click', async () => {
+                if (auth.currentUser) {
+                    await signOut(auth);
+                } else {
+                    await signInWithPopup(auth, provider);
+                }
+            });
+
+            onAuthStateChanged(auth, async (user) => {
+                currentUser = user || null;
+                if (!user) {
+                    localStorage.removeItem(TOKEN_STORAGE_KEY);
+                    loginBtn.textContent = 'Sign in';
+                    userCredits = 0;
+                    updateCreditsDisplay();
+                    return;
+                }
+
+                const token = await user.getIdToken();
+                localStorage.setItem(TOKEN_STORAGE_KEY, token);
+                loginBtn.textContent = 'Sign out';
+
+                // Fetch credits for UI
+                await refreshCredits();
+                // Fetch projects for sidebar
+                loadUserProjects();
+            });
+        }
+
+        function getIdToken() {
+            return localStorage.getItem(TOKEN_STORAGE_KEY);
+        }
+
+        async function authedFetch(url, options = {}) {
+            const token = getIdToken();
+            const headers = Object.assign({}, options.headers || {});
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            return fetch(url, Object.assign({}, options, { headers }));
+        }
+
+        async function refreshCredits() {
+            try {
+                const res = await authedFetch(`${API_BASE_URL}/api/me/credits`);
+                if (!res.ok) return;
+                const data = await res.json();
+                userCredits = data.credits_remaining ?? 0;
+                updateCreditsDisplay();
+            } catch (e) {
+                console.warn('Failed to refresh credits', e);
+            }
+        }
+
+        async function handleGenerateClick(e) {
+            e.preventDefault();
+            
+            const url = urlInput.value;
+            
+            if (!validateYouTubeURL(url)) {
+                showToast('Please enter a valid YouTube URL', 'error');
+                return;
+            }
+            
+            // Require login
+            if (!getIdToken()) {
+                showToast('Please sign in to generate blogs', 'error');
+                return;
+            }
+            
+            await generateBlog(url);
+        }
+
+        // YouTube URL validation
+        function validateYouTubeURL(url) {
+            const patterns = [
+                /^https?:\/\/(www\.)?youtube\.com\/watch\?v=[\w-]+/,
+                /^https?:\/\/youtu\.be\/[\w-]+/,
+                /^https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+/
+            ];
+            return patterns.some(pattern => pattern.test(url));
+        }
+
+        function handleUrlInput(e) {
+            const url = e.target.value;
+            
+            if (url.length === 0) {
+                updateValidation(null);
+                return;
+            }
+            
+            const isValid = validateYouTubeURL(url);
+            updateValidation(isValid);
+        }
+
+        function updateValidation(isValid) {
+            const iconElement = validationIcon;
+            const errorElement = urlError;
+            
+            if (isValid === null) {
+                iconElement.className = 'h-5 w-5 hidden';
+                errorElement.classList.add('hidden');
+            } else if (isValid) {
+                iconElement.className = 'h-5 w-5 text-green-500';
+                iconElement.setAttribute('data-lucide', 'check-circle');
+                errorElement.classList.add('hidden');
+                lucide.createIcons();
+            } else {
+                iconElement.className = 'h-5 w-5 text-red-500';
+                iconElement.setAttribute('data-lucide', 'x-circle');
+                errorElement.classList.remove('hidden');
+                lucide.createIcons();
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const url = urlInput.value;
+            if (!validateYouTubeURL(url)) return;
+            
+            // Require login
+            if (!getIdToken()) {
+                showToast('Please sign in to generate blogs', 'error');
+                return;
+            }
+            
+            await generateBlog(url);
+        }
+        async function generateBlog(url) {
+            if (isGenerating) {
+                return;
+            }
+            
+            try {
+                isGenerating = true;
+                
+                // Update UI state
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline mr-2"></div>Generating...';
+                
+                // Show loading section
+                loadingSection.classList.remove('hidden');
+                blogEditor.classList.add('hidden');
+                videoPreview.classList.add('hidden');
+                
+                // Start progress animation
+                startProgressAnimation();
+                
+                // Get current settings
+                const settings = {
+                    url: url,
+                    template: currentTemplate,
+                    language: currentLanguage,
+                    fact_cleanup: factCleanupMode.checked,
+                    humanize: humanizeMode.checked
+                };
+                
+                // Get video info
+                const videoResponse = await fetch(`${API_BASE_URL}/api/video-info`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (!videoResponse.ok) {
+                    const errorText = await videoResponse.text();
+                    throw new Error(`Failed to fetch video information: ${errorText}`);
+                }
+                
+                currentVideoData = await videoResponse.json();
+                
+                // Generate blog content
+                const blogResponse = await authedFetch(`${API_BASE_URL}/api/generate-blog`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (!blogResponse.ok) {
+                    const errorText = await blogResponse.text();
+                    throw new Error(`Failed to generate blog content: ${errorText}`);
+                }
+                
+                const blogData = await blogResponse.json();
+                currentBlogContent = blogData.content;
+                
+                // Update credits
+                userCredits = blogData.credits_remaining;
+                updateCreditsDisplay();
+                
+                // Complete progress animation
+                stopProgressAnimation();
+                
+                // Update UI
+                await updateVideoPreview(currentVideoData);
+                await updateBlogEditor(blogData);
+                
+                // Show results
+                loadingSection.classList.add('hidden');
+                blogEditor.classList.remove('hidden');
+                videoPreview.classList.remove('hidden');
+                
+                // Show success toast
+                showToast('Blog generated successfully!');
+                
+                // Save project
+                saveProject(url, currentVideoData, blogData);
+                
+            } catch (error) {
+                console.error('Error generating blog:', error);
+                stopProgressAnimation();
+                loadingSection.classList.add('hidden');
+                showToast(`Error generating blog: ${error.message}`, 'error');
+            } finally {
+                isGenerating = false;
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i data-lucide="sparkles" class="h-5 w-5 inline mr-2"></i>Generate Blog';
+                lucide.createIcons();
+            }
+        }
+
+        function startProgressAnimation() {
+            let progress = 0;
+            let startTime = Date.now();
+            
+            loadingTimer = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                
+                // Step 1: Analyzing Video (0-30%, 0-5 seconds)
+                if (elapsed < 5000) {
+                    progress = Math.min(30, (elapsed / 5000) * 30);
+                    updateProgressStep(1, 'active');
+                }
+                // Step 2: Processing Transcript (30-60%, 5-15 seconds)
+                else if (elapsed < 15000) {
+                    progress = 30 + Math.min(30, ((elapsed - 5000) / 10000) * 30);
+                    updateProgressStep(1, 'completed');
+                    updateProgressStep(2, 'active');
+                }
+                // Step 3: Generating Content (60-95%, 15+ seconds)
+                else {
+                    progress = 60 + Math.min(35, ((elapsed - 15000) / 20000) * 35);
+                    updateProgressStep(2, 'completed');
+                    updateProgressStep(3, 'active');
+                }
+                
+                // Smooth progress bar animation
+                progressBar.style.width = `${Math.min(95, progress)}%`;
+                progressPercentage.textContent = `${Math.round(Math.min(95, progress))}%`;
+                
+            }, 200);
+        }
+
+        function stopProgressAnimation() {
+            if (loadingTimer) {
+                clearInterval(loadingTimer);
+                loadingTimer = null;
+            }
+            
+            // Complete all steps
+            updateProgressStep(1, 'completed');
+            updateProgressStep(2, 'completed');
+            updateProgressStep(3, 'completed');
+            
+            progressBar.style.width = '100%';
+            progressPercentage.textContent = '100%';
+        }
+
+        function updateProgressStep(stepNumber, status) {
+            const step = document.getElementById(`step${stepNumber}`);
+            const stepIcon = step.querySelector('.step-icon');
+            
+            // Reset classes
+            step.className = 'progress-step flex items-center space-x-4 p-4 rounded-lg';
+            stepIcon.className = 'step-icon w-10 h-10 rounded-full flex items-center justify-center';
+            
+            if (status === 'active') {
+                step.classList.add('bg-red-50', 'border', 'border-red-200');
+                stepIcon.classList.add('bg-red-600');
+                stepIcon.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>';
+            } else if (status === 'completed') {
+                step.classList.add('bg-green-50', 'border', 'border-green-200');
+                stepIcon.classList.add('bg-green-600');
+                stepIcon.innerHTML = '<i data-lucide="check" class="h-5 w-5 text-white"></i>';
+                lucide.createIcons();
+            } else {
+                step.classList.add('bg-gray-50', 'border', 'border-gray-200');
+                stepIcon.classList.add('bg-gray-400');
+                stepIcon.innerHTML = '<i data-lucide="circle" class="h-5 w-5 text-white"></i>';
+                lucide.createIcons();
+            }
+        }
+
+        async function updateVideoPreview(videoData) {
+            document.getElementById('videoThumbnail').src = videoData.thumbnail;
+            document.getElementById('videoDuration').textContent = videoData.duration;
+            document.getElementById('videoTitle').textContent = videoData.title;
+            document.getElementById('channelName').textContent = videoData.channel_name;
+            document.getElementById('videoViews').textContent = videoData.views + ' views';
+            document.getElementById('publishedDate').textContent = videoData.published_at;
+            
+            // Show code indicator if it's a code tutorial
+            const codeIndicator = document.getElementById('codeIndicator');
+            if (videoData.is_code_tutorial) {
+                codeIndicator.classList.remove('hidden');
+            } else {
+                codeIndicator.classList.add('hidden');
+            }
+        }
+
+        async function updateBlogEditor(blogData) {
+            // Set title
+            blogTitle.value = currentVideoData.title;
+            
+            // Set content with enhanced formatting
+            const formattedContent = formatMarkdownToHTML(blogData.content);
+            blogContent.innerHTML = formattedContent;
+            
+            // Update stats
+            updateContentStats();
+            
+            // Add code block functionality if it's a code tutorial
+            if (blogData.is_code_tutorial) {
+                addCodeBlockFunctionality();
+            }
+        }
+
+        function formatMarkdownToHTML(markdown) {
+            return markdown
+                .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold text-gray-900 mt-8 mb-6">$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+                .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                    return createCodeBlock(code.trim(), lang || 'text');
+                })
+                .replace(/^\- (.*$)/gim, '<li class="ml-4 mb-1">• $1</li>')
+                .replace(/^\d+\. (.*$)/gim, '<li class="ml-4 mb-1 list-decimal">$1</li>')
+                .replace(/\n/g, '<br>')
+                .replace(/(<li.*?>.*?<\/li>)/g, '<div class="my-2">$1</div>');
+        }
+
+        function createCodeBlock(code, language) {
+            const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+            return `
+                <div class="code-block my-4">
+                    <div class="code-header">
+                        <span class="language-tag">${language}</span>
+                        <button class="copy-code-btn" onclick="copyCode('${codeId}')">
+                            <i data-lucide="copy" class="h-3 w-3 inline mr-1"></i>
+                            Copy
+                        </button>
+                    </div>
+                    <pre class="bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code id="${codeId}" class="language-${language}">${code}</code></pre>
+                </div>
+            `;
+        }
+
+        function addCodeBlockFunctionality() {
+            // Re-initialize Lucide icons for new code blocks
+            lucide.createIcons();
+        }
+
+        function copyCode(codeId) {
+            const codeElement = document.getElementById(codeId);
+            const code = codeElement.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Code copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy code:', err);
+            });
+        }
+        function handleLanguageChange(e) {
+            currentLanguage = e.target.value;
+            // Clear template cache when language changes
+            templateCache = {};
+        }
+
+        function handleTemplateClick(e) {
+            const templateBtn = e.target.closest('.template-btn');
+            if (!templateBtn) return;
+            
+            const template = templateBtn.dataset.template;
+            if (template === currentTemplate || isGenerating) return;
+            
+            // Update visual state
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'bg-red-50', 'text-red-900');
+                btn.classList.add('border-gray-300', 'bg-white');
+            });
+            
+            templateBtn.classList.remove('border-gray-300', 'bg-white');
+            templateBtn.classList.add('border-red-500', 'bg-red-50', 'text-red-900');
+            
+            currentTemplate = template;
+            
+            // If we have video data, regenerate with new template
+            if (currentVideoData && !isGenerating) {
+                generateBlog(urlInput.value);
+            }
+        }
+
+        function handleContentEdit() {
+            updateContentStats();
+        }
+
+        function handleTitleEdit() {
+            // Auto-save functionality could be added here
+        }
+
+        function updateContentStats() {
+            const text = blogContent.textContent || blogContent.innerText || '';
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            const readingTimeMinutes = Math.max(1, Math.ceil(words / 200));
+            
+            wordCount.textContent = `${words} words`;
+            readingTime.textContent = `${readingTimeMinutes} min read`;
+        }
+
+        function handleFormat(e) {
+            const format = e.target.closest('.format-btn').dataset.format;
+            
+            switch (format) {
+                case 'bold':
+                    document.execCommand('bold');
+                    break;
+                case 'italic':
+                    document.execCommand('italic');
+                    break;
+                case 'heading':
+                    document.execCommand('formatBlock', false, 'h2');
+                    break;
+                case 'list':
+                    document.execCommand('insertUnorderedList');
+                    break;
+                case 'link':
+                    const url = prompt('Enter URL:');
+                    if (url) document.execCommand('createLink', false, url);
+                    break;
+            }
+            
+            updateContentStats();
+        }
+
+        function togglePreview() {
+            const content = document.getElementById('blogContent');
+            const preview = document.getElementById('blogPreview');
+            
+            if (content.classList.contains('hidden')) {
+                // Show editor
+                content.classList.remove('hidden');
+                preview.classList.add('hidden');
+            } else {
+                // Show preview
+                const markdown = htmlToMarkdown(content.innerHTML);
+                preview.innerHTML = formatMarkdownToHTML(markdown);
+                content.classList.add('hidden');
+                preview.classList.remove('hidden');
+            }
+        }
+
+        function htmlToMarkdown(html) {
+            // Simplified HTML to Markdown conversion
+            return html
+                .replace(/<h1[^>]*>(.*?)<\/h1>/g, '# $1')
+                .replace(/<h2[^>]*>(.*?)<\/h2>/g, '## $1')
+                .replace(/<h3[^>]*>(.*?)<\/h3>/g, '### $1')
+                .replace(/<strong[^>]*>(.*?)<\/strong>/g, '**$1**')
+                .replace(/<em[^>]*>(.*?)<\/em>/g, '*$1*')
+                .replace(/<br\s*\/?>/g, '\n')
+                .replace(/<[^>]*>/g, ''); // Remove remaining HTML tags
+        }
+
+        async function handleCopy() {
+            try {
+                const markdown = htmlToMarkdown(blogContent.innerHTML);
+                await navigator.clipboard.writeText(markdown);
+                
+                const copyBtn = document.getElementById('copyBtn');
+                const originalHTML = copyBtn.innerHTML;
+                
+                copyBtn.innerHTML = '<i data-lucide="check-circle-2" class="h-4 w-4 mr-2"></i>Copied!';
+                copyBtn.className = 'inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 border border-green-200';
+                
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.className = 'inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-all';
+                    lucide.createIcons();
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Failed to copy text:', err);
+                showToast('Failed to copy content', 'error');
+            }
+        }
+
+        function toggleExportDropdown() {
+            const dropdown = document.getElementById('exportDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function exportContent(format) {
+            const dropdown = document.getElementById('exportDropdown');
+            dropdown.classList.remove('show');
+            
+            const title = blogTitle.value || 'blog-post';
+            const markdown = htmlToMarkdown(blogContent.innerHTML);
+            
+            switch (format) {
+                case 'markdown':
+                    downloadFile(markdown, `${title}.md`, 'text/markdown');
+                    break;
+                case 'html':
+                    const html = `<!DOCTYPE html>
+<html>
+<head>
+    <title>${title}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2, h3 { color: #333; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    ${formatMarkdownToHTML(markdown)}
+</body>
+</html>`;
+                    downloadFile(html, `${title}.html`, 'text/html');
+                    break;
+                case 'pdf':
+                    // For PDF export, we'd typically use a library like jsPDF
+                    showToast('PDF export coming soon!', 'info');
+                    break;
+            }
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Downloaded ${filename}`);
+        }
+
+        function handleOutsideClick(e) {
+            // Close export dropdown if clicking outside
+            if (!e.target.closest('.export-dropdown')) {
+                const dropdown = document.getElementById('exportDropdown');
+                dropdown.classList.remove('show');
+            }
+        }
+
+        function updateCreditsDisplay() {
+            creditsRemaining.textContent = userCredits;
+            
+            if (userCredits <= 0) {
+                generateBtn.disabled = true;
+                if (!getIdToken()) {
+                    generateBtn.innerHTML = '<i data-lucide="log-in" class="h-5 w-5 inline mr-2"></i>Sign in to Generate';
+                } else {
+                    generateBtn.innerHTML = '<i data-lucide="zap-off" class="h-5 w-5 inline mr-2"></i>No Credits';
+                }
+                generateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                lucide.createIcons();
+            } else {
+                generateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function showCreditsModal() {
+            document.getElementById('creditsModal').classList.remove('hidden');
+        }
+
+        function closeCreditsModal() {
+            document.getElementById('creditsModal').classList.add('hidden');
+        }
+
+        function upgradePlan() {
+            window.location.href = '/pricing';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('successToast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            // Update toast styling based on type
+            if (type === 'success') {
+                toast.className = 'fixed top-4 right-4 px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white border border-green-400';
+            } else if (type === 'error') {
+                toast.className = 'fixed top-4 right-4 px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 z-50 bg-gradient-to-r from-red-500 to-red-600 text-white border border-red-400';
+            } else {
+                toast.className = 'fixed top-4 right-4 px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 z-50 bg-gradient-to-r from-blue-500 to-blue-600 text-white border border-blue-400';
+            }
+            
+            // Show toast with animation
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Hide after 4 seconds for success, 6 seconds for errors
+            const hideDelay = type === 'error' ? 6000 : 4000;
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+            }, hideDelay);
+        }
+
+        async function loadUserProjects() {
+            try {
+                const response = await authedFetch(`${API_BASE_URL}/api/me/projects`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayProjects(data.projects);
+                }
+            } catch (error) {
+                console.error('Failed to load projects:', error);
+            }
+        }
+
+        function displayProjects(projects) {
+            const projectsList = document.getElementById('projectsList');
+            const projectsSidebar = document.getElementById('projectsSidebar');
+            
+            if (projects.length > 0) {
+                projectsSidebar.classList.remove('hidden');
+                
+                projectsList.innerHTML = projects.map(project => `
+                    <div class="project-item p-3 rounded-lg border border-gray-200" onclick="loadProject('${project.id}')">
+                        <div class="flex items-center space-x-3">
+                            <img src="${project.thumbnail}" alt="" class="w-12 h-8 object-cover rounded">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-medium text-sm text-gray-900 truncate">${project.title}</h4>
+                                <p class="text-xs text-gray-600">${new Date(project.created_at).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function loadProject(projectId) {
+            // In a real app, this would load the project data
+            showToast('Project loading functionality coming soon!', 'info');
+        }
+
+        async function saveProject(url, videoData, blogData) {
+            try {
+                const projectData = {
+                    youtube_url: url,
+                    video_title: videoData.title,
+                    video_thumbnail: videoData.thumbnail,
+                    generated_content: {
+                        [currentTemplate]: blogData.content
+                    },
+                    language: currentLanguage,
+                    template: currentTemplate
+                };
+                
+                await authedFetch(`${API_BASE_URL}/api/me/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData)
+                });
+                
+                // Reload projects list
+                loadUserProjects();
+                
+            } catch (error) {
+                console.error('Failed to save project:', error);
+            }
+        }
+
+        // Initialize validation state
+        updateValidation(null);
+    </script>
+  </body>
+</html>
