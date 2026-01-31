@@ -21,6 +21,10 @@ from backend.auth_dependencies import require_firebase_user
 from backend.credits_service import ensure_user_exists, get_credits, consume_credits
 from backend.projects_service import save_project as save_project_fs, list_projects as list_projects_fs
 from backend.billing_service import create_checkout_session, handle_webhook
+from pathlib import Path
+
+# Get project root directory (works in both local and Vercel environments)
+PROJECT_ROOT = Path(parent_dir).resolve()
 
 app = FastAPI(
     title=settings.APP_NAME, 
@@ -42,7 +46,10 @@ youtube_service = YouTubeService(api_key=settings.YOUTUBE_API_KEY)
 blog_generator = BlogGenerator()
 
 # Mount static files (for serving frontend assets)
-app.mount("/public", StaticFiles(directory="public"), name="public")
+# Use absolute path for Vercel compatibility
+public_dir = PROJECT_ROOT / "public"
+if public_dir.exists():
+    app.mount("/public", StaticFiles(directory=str(public_dir)), name="public")
 
 class VideoRequest(BaseModel):
     url: HttpUrl
@@ -77,12 +84,40 @@ class BlogResponse(BaseModel):
 @app.get("/")
 async def serve_frontend():
     """Serve the main frontend HTML file"""
-    return FileResponse("index.html")
+    index_path = PROJECT_ROOT / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path))
+    else:
+        raise HTTPException(status_code=404, detail="Frontend file not found")
 
 @app.get("/pricing")
+@app.get("/pricing.html")
 async def serve_pricing():
     """Serve the pricing/upgrade page"""
-    return FileResponse("pricing.html")
+    pricing_path = PROJECT_ROOT / "pricing.html"
+    if pricing_path.exists():
+        return FileResponse(str(pricing_path))
+    else:
+        raise HTTPException(status_code=404, detail="Pricing page not found")
+
+@app.get("/features")
+@app.get("/features.html")
+async def serve_features():
+    """Serve the features page"""
+    features_path = PROJECT_ROOT / "features.html"
+    if features_path.exists():
+        return FileResponse(str(features_path))
+    else:
+        raise HTTPException(status_code=404, detail="Features page not found")
+
+@app.get("/docs.html")
+async def serve_docs_page():
+    """Serve the documentation page"""
+    docs_path = PROJECT_ROOT / "docs.html"
+    if docs_path.exists():
+        return FileResponse(str(docs_path))
+    else:
+        raise HTTPException(status_code=404, detail="Documentation page not found")
 
 @app.get("/api/public-config")
 async def public_config():

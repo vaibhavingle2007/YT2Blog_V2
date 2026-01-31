@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - YT2Blog Pro | Getting Started Guide</title>
+    <meta name="description"
+        content="Learn how to use YT2Blog Pro to convert YouTube videos into professional blog posts. Complete documentation and guides.">
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#FF0000', secondary: '#CC0000' } } }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e5e7eb;
+        }
+
+        .panel-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 60%;
+        }
+
+        .bg-clip-text {
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .sidebar-link {
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #fef2f2;
+            border-left-color: #ef4444;
+            color: #dc2626;
+        }
+
+        .dark .sidebar-link:hover,
+        .dark .sidebar-link.active {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .doc-section {
+            scroll-margin-top: 100px;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+
+        .dark body {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+
+        .dark .glass-effect {
+            background: rgba(31, 41, 55, 0.95);
+            border-color: #374151;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen dark:bg-gray-900">
+    <!-- Header -->
+    <header class="glass-effect border-b dark:border-gray-700 sticky top-0 z-50 panel-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <div class="flex items-center space-x-3">
+                    <a href="/" class="flex items-center space-x-3 group">
+                        <div class="relative">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-700 rounded-xl blur-sm opacity-60">
+                            </div>
+                            <div class="relative bg-gradient-to-br from-red-500 to-red-700 p-2.5 rounded-xl shadow-lg">
+                                <i data-lucide="youtube" class="h-6 w-6 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <h1
+                                class="text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                                YT2Blog</h1>
+                            <span
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Pro</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <a href="/features.html"
+                        class="nav-link px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-red-600 hover:bg-red-50 font-medium flex items-center space-x-2">
+                        <i data-lucide="sparkles" class="h-4 w-4"></i><span>Features</span>
+                    </a>
+                    <a href="/pricing.html"
+                        class="nav-link px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-red-600 hover:bg-red-50 font-medium flex items-center space-x-2">
+                        <i data-lucide="credit-card" class="h-4 w-4"></i><span>Pricing</span>
+                    </a>
+                    <a href="/docs.html"
+                        class="nav-link px-4 py-2 rounded-lg text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 font-medium flex items-center space-x-2">
+                        <i data-lucide="book-open" class="h-4 w-4"></i><span>Docs</span>
+                    </a>
+                </nav>
+                <div class="hidden lg:flex items-center space-x-3">
+                    <button id="themeToggle"
+                        class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" class="h-5 w-5 text-amber-500 dark:hidden"></i>
+                        <i data-lucide="moon" class="h-5 w-5 text-indigo-400 hidden dark:block"></i>
+                    </button>
+                    <a href="/"
+                        class="flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg">
+                        <i data-lucide="arrow-left" class="h-4 w-4"></i><span>Back to App</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="lg:grid lg:grid-cols-4 lg:gap-12">
+            <!-- Sidebar Navigation -->
+            <aside class="hidden lg:block">
+                <div class="sticky top-28">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                        Documentation</h3>
+                    <nav class="space-y-1">
+                        <a href="#getting-started"
+                            class="sidebar-link active block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">Getting
+                            Started</a>
+                        <a href="#how-it-works"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">How
+                            It Works</a>
+                        <a href="#templates"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">Templates</a>
+                        <a href="#ai-features"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">AI
+                            Features</a>
+                        <a href="#languages"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">Languages</a>
+                        <a href="#export"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">Exporting
+                            Content</a>
+                        <a href="#credits"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">Credits
+                            System</a>
+                        <a href="#api"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">API
+                            Reference</a>
+                        <a href="#faq"
+                            class="sidebar-link block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 font-medium">FAQ</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Documentation Content -->
+            <main class="lg:col-span-3">
+                <!-- Hero -->
+                <div class="mb-12">
+                    <span
+                        class="inline-flex items-center px-4 py-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm font-medium mb-4">
+                        <i data-lucide="book-open" class="h-4 w-4 mr-2"></i>Documentation
+                    </span>
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">YT2Blog Pro <span
+                            class="gradient-text">Documentation</span></h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400">Learn how to convert YouTube videos into
+                        professional blog posts with our comprehensive guide.</p>
+                </div>
+
+                <!-- Getting Started -->
+                <section id="getting-started" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                            <i data-lucide="rocket" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Getting Started</h2>
+                    </div>
+                    <div class="prose dark:prose-invert max-w-none">
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Follow these simple steps to convert your first
+                            YouTube video into a blog post:</p>
+                        <ol class="space-y-4">
+                            <li class="flex items-start space-x-3">
+                                <span
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">1</span>
+                                <div><strong class="text-gray-900 dark:text-white">Copy the YouTube URL</strong>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Find a YouTube video you want to
+                                        convert and copy its URL from your browser.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">2</span>
+                                <div><strong class="text-gray-900 dark:text-white">Paste the URL</strong>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Paste the YouTube URL into the
+                                        input field on the YT2Blog home page.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">3</span>
+                                <div><strong class="text-gray-900 dark:text-white">Configure Options</strong>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Select your preferred language,
+                                        template, and enable AI features as needed.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">4</span>
+                                <div><strong class="text-gray-900 dark:text-white">Generate & Edit</strong>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Click "Generate Blog" and wait.
+                                        Then edit and export your content!</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- How It Works -->
+                <section id="how-it-works" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <i data-lucide="cpu" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">How It Works</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">YT2Blog Pro uses advanced AI technology to
+                        transform video content into written form:</p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-bold mb-3">
+                                1</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Transcript Extraction</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">We extract the video's transcript using
+                                YouTube's caption system or speech-to-text AI.</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center font-bold mb-3">
+                                2</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">AI Processing</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Our LLM analyzes the content, structures
+                                it, and applies the selected template and options.</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                            <div
+                                class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center font-bold mb-3">
+                                3</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Blog Generation</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">The AI creates a professionally
+                                formatted blog post ready for publishing.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Templates -->
+                <section id="templates" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                            <i data-lucide="layout-template" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Templates</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Choose from 4 professionally designed templates:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                            <h4 class="font-semibold text-gray-900 dark:text-white flex items-center"><i
+                                    data-lucide="file-text" class="h-4 w-4 mr-2 text-blue-500"></i>Article</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Standard blog post format with
+                                introduction, body, and conclusion. Best for general content.</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                            <h4 class="font-semibold text-gray-900 dark:text-white flex items-center"><i
+                                    data-lucide="list-ordered" class="h-4 w-4 mr-2 text-purple-500"></i>Tutorial</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Step-by-step format with numbered
+                                sections. Perfect for how-to videos and coding tutorials.</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                            <h4 class="font-semibold text-gray-900 dark:text-white flex items-center"><i
+                                    data-lucide="star" class="h-4 w-4 mr-2 text-amber-500"></i>Review</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Product/service review format with
+                                pros, cons, and ratings. Great for review videos.</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                            <h4 class="font-semibold text-gray-900 dark:text-white flex items-center"><i
+                                    data-lucide="align-left" class="h-4 w-4 mr-2 text-green-500"></i>Summary</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Concise summary with key takeaways.
+                                Ideal for long videos or lectures.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Features -->
+                <section id="ai-features" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                            <i data-lucide="sparkles" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">AI Features</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 flex items-center"><i
+                                    data-lucide="sparkles" class="h-4 w-4 mr-2"></i>AI Humanization</h4>
+                            <p class="text-sm text-green-700 dark:text-green-400 mt-2">Makes content sound natural and
+                                human-written by removing robotic patterns, adding conversational flow, and varying
+                                sentence structure.</p>
+                        </div>
+                        <div
+                            class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                            <h4 class="font-semibold text-amber-800 dark:text-amber-300 flex items-center"><i
+                                    data-lucide="filter" class="h-4 w-4 mr-2"></i>Fact Cleanup Mode</h4>
+                            <p class="text-sm text-amber-700 dark:text-amber-400 mt-2">Removes filler content,
+                                "subscribe and like" prompts, sponsor mentions, intro/outro fluff, and off-topic
+                                tangents. Keeps only valuable information.</p>
+                        </div>
+                        <div
+                            class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                            <h4 class="font-semibold text-purple-800 dark:text-purple-300 flex items-center"><i
+                                    data-lucide="code" class="h-4 w-4 mr-2"></i>Code Detection</h4>
+                            <p class="text-sm text-purple-700 dark:text-purple-400 mt-2">Automatically detects
+                                programming content and formats it with proper code blocks, syntax highlighting, and
+                                technical explanations.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Languages -->
+                <section id="languages" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                            <i data-lucide="globe" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Supported Languages</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">YT2Blog Pro supports 8 languages with
+                        native-quality output:</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇺🇸</span>
+                            <p class="text-sm font-medium mt-1">English</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇮🇳</span>
+                            <p class="text-sm font-medium mt-1">Hindi</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇪🇸</span>
+                            <p class="text-sm font-medium mt-1">Spanish</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇫🇷</span>
+                            <p class="text-sm font-medium mt-1">French</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇩🇪</span>
+                            <p class="text-sm font-medium mt-1">German</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇵🇹</span>
+                            <p class="text-sm font-medium mt-1">Portuguese</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇯🇵</span>
+                            <p class="text-sm font-medium mt-1">Japanese</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-center"><span
+                                class="text-xl">🇰🇷</span>
+                            <p class="text-sm font-medium mt-1">Korean</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Export -->
+                <section id="export" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center">
+                            <i data-lucide="download" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Exporting Content</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Export your generated blog in multiple formats:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center space-x-3"><i data-lucide="file-text"
+                                class="h-5 w-5 text-gray-600"></i><span><strong>Markdown (.md)</strong> - Compatible
+                                with GitHub, Dev.to, Medium imports</span></li>
+                        <li class="flex items-center space-x-3"><i data-lucide="code"
+                                class="h-5 w-5 text-orange-500"></i><span><strong>HTML (.html)</strong> - Standalone
+                                HTML file with embedded styling</span></li>
+                        <li class="flex items-center space-x-3"><i data-lucide="copy"
+                                class="h-5 w-5 text-green-500"></i><span><strong>Copy to Clipboard</strong> - Instantly
+                                copy content to paste anywhere</span></li>
+                    </ul>
+                </section>
+
+                <!-- Credits -->
+                <section id="credits" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                            <i data-lucide="zap" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Credits System</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">YT2Blog Pro uses a credit system for blog
+                        generation:</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                            <h4 class="font-semibold text-gray-900 dark:text-white">Free Tier</h4>
+                            <p class="text-3xl font-bold text-red-600 my-2">5 credits/day</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Resets every 24 hours. No credit card
+                                required.</p>
+                        </div>
+                        <div
+                            class="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <h4 class="font-semibold text-gray-900 dark:text-white">Pro Tier</h4>
+                            <p class="text-3xl font-bold text-purple-600 my-2">Unlimited</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Generate as many blogs as you need with
+                                priority processing.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Reference -->
+                <section id="api" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                            <i data-lucide="terminal" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">API Reference</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">For developers, YT2Blog Pro provides a simple REST
+                        API:</p>
+                    <div class="code-block mb-4">
+                        <code>POST /api/generate<br><br>{<br>  "url": "https://youtube.com/watch?v=...",<br>  "template": "article",<br>  "language": "en",<br>  "humanize": true,<br>  "factCleanup": true<br>}</code>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-500">API access available on Pro plans. Contact us
+                        for API keys.</p>
+                </section>
+
+                <!-- FAQ -->
+                <section id="faq" class="doc-section glass-effect rounded-2xl p-8 panel-shadow mb-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
+                            <i data-lucide="help-circle" class="h-5 w-5 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">FAQ</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <details class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer">
+                            <summary class="font-semibold text-gray-900 dark:text-white">What videos work best?
+                            </summary>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Videos with clear speech and captions work
+                                best. Tutorials, how-to videos, reviews, and educational content produce the best
+                                results.</p>
+                        </details>
+                        <details class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer">
+                            <summary class="font-semibold text-gray-900 dark:text-white">Can I use the generated content
+                                commercially?</summary>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Yes! Content generated is yours to use.
+                                However, always respect the original video creator's rights and provide attribution
+                                where appropriate.</p>
+                        </details>
+                        <details class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer">
+                            <summary class="font-semibold text-gray-900 dark:text-white">Why did my generation fail?
+                            </summary>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Common reasons: video has no captions,
+                                video is private/age-restricted, or video is too long (over 2 hours). Try a different
+                                video or contact support.</p>
+                        </details>
+                        <details class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer">
+                            <summary class="font-semibold text-gray-900 dark:text-white">How accurate is the
+                                translation?</summary>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Our AI produces high-quality translations
+                                that read naturally in each language. However, technical terms and proper nouns may
+                                occasionally need manual review.</p>
+                        </details>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="bg-gradient-to-br from-red-500 to-red-700 p-2 rounded-xl"><i data-lucide="youtube"
+                        class="h-5 w-5 text-white"></i></div>
+                <span class="text-lg font-bold text-white">YT2Blog Pro</span>
+            </div>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="/" class="hover:text-white">Home</a>
+                <a href="/features.html" class="hover:text-white">Features</a>
+                <a href="/pricing.html" class="hover:text-white">Pricing</a>
+                <a href="/docs.html" class="hover:text-white">Docs</a>
+            </div>
+            <p class="text-sm">&copy; 2026 YT2Blog Pro. Made with ❤️ using AI technology.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            lucide.createIcons();
+        });
+
+        // Sidebar active state
+        const sections = document.querySelectorAll('.doc-section');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) current = section.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
