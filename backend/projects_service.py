@@ -21,6 +21,17 @@ def save_project(uid: str, project: Dict[str, Any]) -> str:
     return ref.id
 
 
+def get_project(uid: str, project_id: str) -> Dict[str, Any] | None:
+    """Get a single project by ID for a user."""
+    db = get_db()
+    doc = db.collection("users").document(uid).collection("projects").document(project_id).get()
+    if not doc.exists:
+        return None
+    data = doc.to_dict() or {}
+    data["id"] = doc.id
+    return data
+
+
 def list_projects(uid: str, limit: int = 20) -> List[Dict[str, Any]]:
     db = get_db()
     q = (

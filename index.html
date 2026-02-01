@@ -1925,15 +1925,49 @@
         }
 
         async function loadUserProjects() {
+            // Don't try to load projects if user is not authenticated
+            if (!getIdToken()) {
+                const projectsSidebar = document.getElementById('projectsSidebar');
+                if (projectsSidebar) projectsSidebar.classList.add('hidden');
+                return;
+            }
+
             try {
+                const projectsList = document.getElementById('projectsList');
+                const projectsSidebar = document.getElementById('projectsSidebar');
+
+                // Show loading state
+                if (projectsList) {
+                    projectsList.innerHTML = `
+                        <div class="flex items-center justify-center py-4">
+                            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
+                            <span class="ml-2 text-sm text-gray-500">Loading projects...</span>
+                        </div>
+                    `;
+                    projectsSidebar.classList.remove('hidden');
+                }
+
                 const response = await authedFetch(`${API_BASE_URL}/api/me/projects`);
 
                 if (response.ok) {
                     const data = await response.json();
-                    displayProjects(data.projects);
+                    displayProjects(data.projects || []);
+                } else {
+                    console.warn('Failed to load projects:', response.status);
+                    if (projectsList) {
+                        projectsList.innerHTML = `
+                            <p class="text-sm text-gray-500 text-center py-2">Failed to load projects</p>
+                        `;
+                    }
                 }
             } catch (error) {
                 console.error('Failed to load projects:', error);
+                const projectsList = document.getElementById('projectsList');
+                if (projectsList) {
+                    projectsList.innerHTML = `
+                        <p class="text-sm text-gray-500 text-center py-2">Failed to load projects</p>
+                    `;
+                }
             }
         }
 
@@ -1941,26 +1975,172 @@
             const projectsList = document.getElementById('projectsList');
             const projectsSidebar = document.getElementById('projectsSidebar');
 
-            if (projects.length > 0) {
-                projectsSidebar.classList.remove('hidden');
+            if (!projectsList || !projectsSidebar) return;
 
-                projectsList.innerHTML = projects.map(project => `
-                    <div class="project-item p-3 rounded-lg border border-gray-200" onclick="loadProject('${project.id}')">
+            if (projects.length === 0) {
+                projectsSidebar.classList.add('hidden');
+                return;
+            }
+
+            projectsSidebar.classList.remove('hidden');
+
+            projectsList.innerHTML = projects.map(project => {
+                const title = project.video_title || project.title || 'Untitled Project';
+                const thumbnail = project.video_thumbnail || project.thumbnail || '';
+                const createdAt = project.created_at ? new Date(project.created_at).toLocaleDateString() : '';
+                const template = project.template || 'article';
+                const language = project.language || 'en';
+
+                return `
+                    <div class="project-item p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 cursor-pointer transition-all group" 
+                         onclick="loadProject('${project.id}')"
+                         data-project-id="${project.id}">
                         <div class="flex items-center space-x-3">
-                            <img src="${project.thumbnail}" alt="" class="w-12 h-8 object-cover rounded">
+                            ${thumbnail ? `
+                                <img src="${thumbnail}" alt="" class="w-14 h-10 object-cover rounded shadow-sm flex-shrink-0">
+                            ` : `
+                                <div class="w-14 h-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="file-text" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                            `}
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-medium text-sm text-gray-900 truncate">${project.title}</h4>
-                                <p class="text-xs text-gray-600">${new Date(project.created_at).toLocaleDateString()}</p>
+                                <h4 class="font-medium text-sm text-gray-900 dark:text-gray-100 truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">${escapeHtml(title)}</h4>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">${createdAt}</span>
+                                    <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 capitalize">${template}</span>
+                                </div>
                             </div>
+                            <i data-lucide="chevron-right" class="h-4 w-4 text-gray-400 group-hover:text-orange-500 transition-colors flex-shrink-0"></i>
                         </div>
                     </div>
-                `).join('');
-            }
+                `;
+            }).join('');
+
+            // Re-initialize icons
+            lucide.createIcons();
         }
 
-        function loadProject(projectId) {
-            // In a real app, this would load the project data
-            showToast('Project loading functionality coming soon!', 'info');
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function loadProject(projectId) {
+            try {
+                // Show loading toast
+                showToast('Loading project...', 'info');
+
+                const response = await authedFetch(`${API_BASE_URL}/api/me/projects/${projectId}`);
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to load project');
+                }
+
+                const data = await response.json();
+                const project = data.project;
+
+                if (!project) {
+                    throw new Error('Project data not found');
+                }
+
+                // Update URL input if available
+                if (project.youtube_url && urlInput) {
+                    urlInput.value = project.youtube_url;
+                    updateValidation(true);
+                }
+
+                // Update template selection
+                if (project.template) {
+                    currentTemplate = project.template;
+                    document.querySelectorAll('.template-btn').forEach(btn => {
+                        if (btn.dataset.template === project.template) {
+                            btn.classList.add('border-red-500', 'bg-red-50');
+                            btn.classList.remove('border-gray-300', 'bg-white');
+                        } else {
+                            btn.classList.remove('border-red-500', 'bg-red-50');
+                            btn.classList.add('border-gray-300', 'bg-white');
+                        }
+                    });
+                }
+
+                // Update language selection
+                if (project.language && languageSelector) {
+                    languageSelector.value = project.language;
+                    currentLanguage = project.language;
+                }
+
+                // Load video preview data
+                if (project.video_title) {
+                    currentVideoData = {
+                        title: project.video_title,
+                        thumbnail: project.video_thumbnail || '',
+                        duration: project.video_duration || '',
+                        views: project.video_views || '',
+                        channel_name: project.video_channel || '',
+                        published_at: project.video_published_at || '',
+                        is_code_tutorial: project.is_code_tutorial || false
+                    };
+
+                    // Update video preview
+                    const videoThumbnail = document.getElementById('videoThumbnail');
+                    const videoTitle = document.getElementById('videoTitle');
+                    const channelName = document.getElementById('channelName');
+                    const videoViews = document.getElementById('videoViews');
+                    const publishedDate = document.getElementById('publishedDate');
+                    const videoDuration = document.getElementById('videoDuration');
+
+                    if (videoThumbnail && currentVideoData.thumbnail) videoThumbnail.src = currentVideoData.thumbnail;
+                    if (videoTitle) videoTitle.textContent = currentVideoData.title;
+                    if (channelName) channelName.textContent = currentVideoData.channel_name;
+                    if (videoViews) videoViews.textContent = currentVideoData.views;
+                    if (publishedDate) publishedDate.textContent = currentVideoData.published_at;
+                    if (videoDuration) videoDuration.textContent = currentVideoData.duration;
+
+                    // Show video preview
+                    videoPreview.classList.remove('hidden');
+                }
+
+                // Load blog content
+                const generatedContent = project.generated_content;
+                if (generatedContent) {
+                    // Get content for the current template, or first available
+                    const content = generatedContent[project.template] ||
+                        generatedContent[currentTemplate] ||
+                        Object.values(generatedContent)[0];
+
+                    if (content) {
+                        currentBlogContent = content;
+
+                        // Update blog editor
+                        if (blogTitle) blogTitle.value = project.video_title || '';
+                        if (blogContent) blogContent.innerHTML = formatMarkdownToHTML(content);
+
+                        // Update stats
+                        updateContentStats();
+
+                        // Show blog editor
+                        blogEditor.classList.remove('hidden');
+                        loadingSection.classList.add('hidden');
+                    }
+                }
+
+                // Highlight the selected project in the sidebar
+                document.querySelectorAll('.project-item').forEach(item => {
+                    if (item.dataset.projectId === projectId) {
+                        item.classList.add('border-orange-500', 'bg-orange-50', 'dark:bg-orange-900/20');
+                    } else {
+                        item.classList.remove('border-orange-500', 'bg-orange-50', 'dark:bg-orange-900/20');
+                    }
+                });
+
+                showToast('Project loaded successfully!');
+
+            } catch (error) {
+                console.error('Failed to load project:', error);
+                showToast(`Failed to load project: ${error.message}`, 'error');
+            }
         }
 
         async function saveProject(url, videoData, blogData) {
@@ -1969,6 +2149,11 @@
                     youtube_url: url,
                     video_title: videoData.title,
                     video_thumbnail: videoData.thumbnail,
+                    video_duration: videoData.duration || '',
+                    video_views: videoData.views || '',
+                    video_channel: videoData.channel_name || '',
+                    video_published_at: videoData.published_at || '',
+                    is_code_tutorial: videoData.is_code_tutorial || false,
                     generated_content: {
                         [currentTemplate]: blogData.content
                     },

@@ -19,7 +19,7 @@ from backend.config import settings
 from utils.blog_generator import BlogGenerator
 from backend.auth_dependencies import require_firebase_user
 from backend.credits_service import ensure_user_exists, get_credits, consume_credits
-from backend.projects_service import save_project as save_project_fs, list_projects as list_projects_fs
+from backend.projects_service import save_project as save_project_fs, list_projects as list_projects_fs, get_project as get_project_fs
 from backend.billing_service import create_checkout_session, handle_webhook
 from pathlib import Path
 
@@ -366,6 +366,16 @@ async def my_projects(user: Dict[str, Any] = Depends(require_firebase_user)):
     ensure_user_exists(uid=uid, email=user.get("email"))
     projects = list_projects_fs(uid)
     return {"projects": projects}
+
+@app.get("/api/me/projects/{project_id}")
+async def get_my_project(project_id: str, user: Dict[str, Any] = Depends(require_firebase_user)):
+    """Get a single project by ID for the logged-in user"""
+    uid = user["uid"]
+    ensure_user_exists(uid=uid, email=user.get("email"))
+    project = get_project_fs(uid, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return {"project": project}
 
 @app.post("/api/me/projects")
 async def save_my_project(project_data: dict, user: Dict[str, Any] = Depends(require_firebase_user)):
