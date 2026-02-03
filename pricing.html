@@ -23,13 +23,20 @@
     }
 
     .glass-effect {
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       background: rgba(255, 255, 255, 0.95);
-      border: 1px solid #e5e7eb;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+      border-top: none; border-left: none; border-right: none;
+    }
+
+    .dark .glass-effect {
+      background: rgba(17, 24, 39, 0.95);
+      border-color: rgba(55, 65, 81, 0.6);
     }
 
     .panel-shadow {
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     .gradient-text {
@@ -101,121 +108,114 @@
 
 <body class="min-h-screen dark:bg-gray-900">
   <!-- Header -->
-  <header class="glass-effect border-b dark:border-gray-700 sticky top-0 z-50 panel-shadow">
+  <header class="glass-effect sticky top-0 z-40 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-20">
-        <div class="flex items-center space-x-3">
-          <a href="/" class="flex items-center space-x-3 group">
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-700 rounded-xl blur-sm opacity-60">
+
+        <!-- Logo & Branding -->
+        <div class="flex items-center space-x-3 flex-shrink-0">
+          <a href="/" class="flex items-center space-x-2 group">
+            <div class="relative flex items-center justify-center">
+              <div
+                class="absolute inset-0 bg-red-600 rounded-lg blur-sm opacity-50 group-hover:opacity-75 transition-opacity duration-300">
               </div>
-              <div class="relative bg-gradient-to-br from-red-500 to-red-700 p-2.5 rounded-xl shadow-lg">
-                <i data-lucide="youtube" class="h-6 w-6 text-white"></i>
+              <div class="relative bg-gradient-to-br from-red-500 to-red-700 p-2 rounded-lg shadow-md transform group-hover:scale-105 transition-transform duration-300">
+                <i data-lucide="youtube" class="h-5 w-5 text-white"></i>
               </div>
             </div>
-            <div class="flex items-center space-x-2">
-              <h1
-                class="text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                YT2Blog</h1>
-              <span
-                class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Pro</span>
+            <div class="flex flex-col">
+              <span class="text-xl font-bold text-gray-900 dark:text-white leading-none tracking-tight">YT2Blog</span>
+              <span class="text-[10px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">Pro Converter</span>
             </div>
           </a>
         </div>
-        <nav class="hidden lg:flex items-center space-x-1">
-          <a href="/features.html"
-            class="nav-link px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium flex items-center space-x-2">
-            <i data-lucide="sparkles" class="h-4 w-4"></i><span>Features</span>
-          </a>
-          <a href="/pricing.html"
-            class="nav-link px-4 py-2 rounded-lg text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 font-medium flex items-center space-x-2">
-            <i data-lucide="credit-card" class="h-4 w-4"></i><span>Pricing</span>
-          </a>
-          <a href="/docs.html"
-            class="nav-link px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium flex items-center space-x-2">
-            <i data-lucide="book-open" class="h-4 w-4"></i><span>Docs</span>
-          </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center space-x-6">
+          <a href="/features.html" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors">Features</a>
+          <a href="/pricing.html" class="text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 px-3 py-1.5 rounded-lg transition-colors">Pricing</a>
+          <a href="/docs.html" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors">Documentation</a>
         </nav>
-        <div class="hidden lg:flex items-center space-x-3">
-          <button id="themeToggle"
-            class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
-            <i data-lucide="sun" class="h-5 w-5 text-amber-500 dark:hidden"></i>
-            <i data-lucide="moon" class="h-5 w-5 text-indigo-400 hidden dark:block"></i>
+
+        <!-- Desktop Right Section -->
+        <div class="hidden lg:flex items-center space-x-4">
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+            <i data-lucide="sun" class="h-5 w-5 dark:hidden"></i>
+            <i data-lucide="moon" class="h-5 w-5 hidden dark:block"></i>
           </button>
-          <a href="/"
-            class="flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg transition-all">
-            <i data-lucide="arrow-left" class="h-4 w-4"></i><span>Back to App</span>
+
+          <!-- Back to App Button -->
+          <a href="/" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center">
+            <i data-lucide="arrow-left" class="h-4 w-4 mr-1.5"></i>
+            Back to App
           </a>
         </div>
 
         <!-- Mobile Menu Button -->
-        <button id="mobileMenuBtn"
-          class="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
-          <i data-lucide="menu" class="h-5 w-5 text-gray-700 dark:text-gray-300"></i>
-        </button>
+        <div class="lg:hidden flex items-center space-x-2">
+           <button id="headerThemeToggleMobile" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+            <i data-lucide="sun" class="h-5 w-5 dark:hidden"></i>
+            <i data-lucide="moon" class="h-5 w-5 hidden dark:block"></i>
+          </button>
+          <button id="mobileMenuBtn" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+        </div>
       </div>
     </div>
+  </header>
 
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobileDrawer" class="lg:hidden fixed inset-0 z-50 hidden">
-      <div id="mobileBackdrop"
-        class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
-      <div id="mobileDrawerPanel"
-        class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out">
-        <div class="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
-          <div class="flex items-center space-x-3">
-            <div class="bg-gradient-to-br from-red-500 to-red-700 p-2 rounded-xl">
+  <!-- Mobile Navigation Drawer -->
+  <div id="mobileDrawer" class="lg:hidden fixed inset-0 z-[100] hidden">
+      <!-- Backdrop -->
+      <div id="mobileBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+      <!-- Drawer Panel -->
+      <div id="mobileDrawerPanel" class="absolute right-0 top-0 h-full w-[80%] max-w-sm bg-white dark:bg-gray-900 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
+
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <div class="flex items-center space-x-2">
+            <div class="bg-red-600 p-1.5 rounded-lg">
               <i data-lucide="youtube" class="h-5 w-5 text-white"></i>
             </div>
             <span class="text-lg font-bold text-gray-900 dark:text-white">YT2Blog</span>
           </div>
-          <button id="closeMobileMenu"
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <i data-lucide="x" class="h-5 w-5 text-gray-600 dark:text-gray-400"></i>
+          <button id="closeMobileMenu" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <i data-lucide="x" class="h-6 w-6"></i>
           </button>
         </div>
-        <div class="p-5 space-y-6">
-          <nav class="space-y-2">
-            <a href="/features.html"
-              class="flex items-center space-x-3 p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
-              <i data-lucide="sparkles" class="h-5 w-5 text-red-500"></i>
+
+        <!-- Drawer Content -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-6">
+
+          <!-- Navigation Links -->
+          <nav class="space-y-1">
+            <a href="/features.html" class="mobile-nav-link flex items-center space-x-3 px-3 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <i data-lucide="sparkles" class="h-5 w-5 text-gray-400 group-hover:text-red-500"></i>
               <span class="font-medium">Features</span>
             </a>
-            <a href="/pricing.html"
-              class="flex items-center space-x-3 p-3 rounded-xl text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20">
+            <a href="/pricing.html" class="mobile-nav-link flex items-center space-x-3 px-3 py-3 rounded-lg bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 transition-colors">
               <i data-lucide="credit-card" class="h-5 w-5"></i>
               <span class="font-medium">Pricing</span>
             </a>
-            <a href="/docs.html"
-              class="flex items-center space-x-3 p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
-              <i data-lucide="book-open" class="h-5 w-5 text-blue-500"></i>
+            <a href="/docs.html" class="mobile-nav-link flex items-center space-x-3 px-3 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <i data-lucide="book-open" class="h-5 w-5 text-gray-400 group-hover:text-red-500"></i>
               <span class="font-medium">Documentation</span>
             </a>
           </nav>
-          <div class="border-t border-gray-200 dark:border-gray-700"></div>
-          <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
-            <div class="flex items-center space-x-3">
-              <i data-lucide="palette" class="h-5 w-5 text-gray-500"></i>
-              <span class="font-medium text-gray-700 dark:text-gray-300">Theme</span>
-            </div>
-            <button id="mobileThemeToggle"
-              class="relative w-14 h-8 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-300">
-              <span
-                class="absolute top-1 left-1 w-6 h-6 rounded-full bg-white dark:bg-gray-300 shadow-md transform transition-transform duration-300 dark:translate-x-6 flex items-center justify-center">
-                <i data-lucide="sun" class="h-3.5 w-3.5 text-amber-500 dark:hidden"></i>
-                <i data-lucide="moon" class="h-3.5 w-3.5 text-indigo-500 hidden dark:block"></i>
-              </span>
-            </button>
-          </div>
-          <a href="/"
-            class="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg transition-all">
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-5 border-t border-gray-100 dark:border-gray-800 space-y-3 bg-gray-50/50 dark:bg-gray-900/50">
+          <a href="/" class="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 shadow-md transition-all">
             <i data-lucide="arrow-left" class="h-4 w-4"></i>
             <span>Back to App</span>
           </a>
         </div>
       </div>
     </div>
-  </header>
 
   <!-- Hero Section -->
   <section class="hero-gradient py-20 lg:py-28">
@@ -422,8 +422,8 @@
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">See what's included in each plan
           and choose the one that fits your needs.</p>
       </div>
-      <div class="glass-effect rounded-2xl panel-shadow overflow-hidden">
-        <table class="w-full">
+      <div class="glass-effect rounded-2xl panel-shadow overflow-x-auto">
+        <table class="w-full min-w-[600px]">
           <thead>
             <tr class="border-b border-gray-200 dark:border-gray-700">
               <th class="text-left p-6 text-gray-900 dark:text-white font-semibold">Feature</th>
@@ -549,6 +549,7 @@
 
     themeToggle?.addEventListener('click', toggleTheme);
     mobileThemeToggle?.addEventListener('click', toggleTheme);
+    document.getElementById('headerThemeToggleMobile')?.addEventListener('click', toggleTheme);
 
     // Mobile menu
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -623,14 +624,27 @@
       const auth = getAuth(firebaseApp);
 
       onAuthStateChanged(auth, async (user) => {
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn'); // Get the mobile login button if it exists
+
         if (!user) {
           clearToken();
           creditsRow?.classList.add("hidden");
+          // Update mobile button if present
+          if (mobileLoginBtn) {
+             mobileLoginBtn.innerHTML = '<i data-lucide="log-in" class="h-4 w-4"></i><span>Sign In</span>';
+             lucide.createIcons();
+          }
           return;
         }
 
         const token = await user.getIdToken();
         setToken(token);
+
+        // Update mobile button if present
+        if (mobileLoginBtn) {
+             mobileLoginBtn.innerHTML = '<i data-lucide="log-out" class="h-4 w-4"></i><span>Sign Out</span>';
+             lucide.createIcons();
+        }
 
         try {
           const res = await authedFetch(`${API_BASE_URL}/api/me/credits`);
